@@ -12,13 +12,15 @@ p.I = 0.5;   % (kg*m^2)inertia
 
 p.stepLength = 0.7;
 p.stepTime = 0.7;
-p.stepHeight = 0.15;
+p.stepHeight = 0.25;
 
+user_grid = 60;
+%%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %                     Set up function handles                             %
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 problem.func.dynamics = @(t,x,u)( hoppingDynamics(x,u,p) );
-problem.func.pathObj = @(t,x,u)( u(1,:).^2 + u(2,:).^2 );  % minimize u
+problem.func.pathObj = @(t,x,u)( obj_torque(x, u) );  % minimize u
 problem.func.pathCst = @(t,x,u)( pathConstraint(x, u) );
 problem.func.bndCst = @(t0,x0,tF,xF)( stepConstraint(x0,xF,p) );
 
@@ -30,15 +32,15 @@ problem.bounds.initialTime.upp = 0;
 problem.bounds.finalTime.low = p.stepTime;
 problem.bounds.finalTime.upp = p.stepTime;
 
-problem.bounds.initialState.low = [0;0.5;-pi/4;-100;-100;-100];
-problem.bounds.initialState.upp = [0;0.8;pi/4;100;100;100];
-problem.bounds.finalState.low = [0.7;0.5;-pi/4;-100;-100;-100];
-problem.bounds.finalState.upp = [0.7;1.2;pi/4;100;100;100]; 
+problem.bounds.initialState.low = [0;0.5;-pi/6;-100;-100;-100];
+problem.bounds.initialState.upp = [0;0.8;pi/6;100;100;100];
+problem.bounds.finalState.low = [0.7;0.5;-pi/6;-100;-100;-100];
+problem.bounds.finalState.upp = [0.7;1.2;pi/6;100;100;100]; 
 
-problem.bounds.state.low = [-5;0.5;-pi/4;-inf;-inf;-inf];
-problem.bounds.state.upp = [5;1.2;pi/4;inf;inf;inf];
+problem.bounds.state.low = [-5;0.5;-pi/6;-inf;-inf;-inf];
+problem.bounds.state.upp = [5;1.2;pi/6;inf;inf;inf];
 
-problem.bounds.control.low = [-5;0.5;-inf;0];
+problem.bounds.control.low = [-5;0;-inf;0];
 problem.bounds.control.upp = [5;1.2;inf;p.m*p.g*10];
 
 
@@ -49,8 +51,8 @@ problem.bounds.control.upp = [5;1.2;inf;p.m*p.g*10];
 % For now, just assume a linear trajectory between boundary values
 
 problem.guess.time = [0, p.stepTime];
-problem.guess.state = [[0;0.6;-0.15;2.3;-2.17;-2.16], [1;0.6;-0.15;2.3;-2.17;-2.16]];
-problem.guess.control = [[0;0.6;-13;73],[1;0.6;0;0]];
+problem.guess.state = [[0;0.1;-0.15;2.3;-2.17;-2.16], [1;0.6;-0.15;2.3;-2.17;-2.16]];
+problem.guess.control = [[0;0;-13;73],[0.7;0.15;0;0]];
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %                         Solver options                                  %
@@ -67,5 +69,44 @@ problem.options.method = 'trapezoid';
 %                            Solve!                                       %
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 
-soln = optimTraj(problem);
+soln = optimTraj(problem, user_grid);
 save('soln','soln');
+
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%                        Display Solution                                 %                                     
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%%
+state = soln.grid.state;
+control = soln.grid.control;
+
+pcx = state(1,:);
+pcy = state(2,:);
+sita = state(3,:);
+pex = control(1,:);
+pey = control(2,:);
+
+phase_separate = fix(user_grid/2);
+pC = [p.stepLength/2, p.stepHeight*1.3];
+p0 = [pex(phase_separate), pey(phase_separate)];
+pF = [pex(user_grid), pey(user_grid)];
+
+[x,y] = interp(p0,pF,pC,phase_separate);
+pex(phase_separate+1:end) = x;
+pey(phase_separate+1:end) = y;
+for i=1:1:60
+    hold off
+    plot([pcx(i),pex(i)],[pcy(i),pey(i)],'LineWidth',2);
+    hold on
+    draw_stair(p.stepLength, p.stepHeight);
+    hold on
+    draw_robot(sita(i), pcx(i),pcy(i));
+    hold on
+    plot(pcx(i),pcy(i),'o',...
+        'MarkerSize',10);
+    axis equal
+    xlim([-2,2]);
+    ylim([-0.5,2.5]);  
+    hold on
+    drawnow;
+    pause(0.08);
+end
