@@ -32,9 +32,9 @@ problem.bounds.initialTime.upp = 0;
 problem.bounds.finalTime.low = p.stepTime;
 problem.bounds.finalTime.upp = p.stepTime;
 
-problem.bounds.initialState.low = [0;0.5;-pi/6;-100;-100;-100];
+problem.bounds.initialState.low = [-0.2;0.5;-pi/6;-100;-100;-100];
 problem.bounds.initialState.upp = [0;0.8;pi/6;100;100;100];
-problem.bounds.finalState.low = [0.7;0.5;-pi/6;-100;-100;-100];
+problem.bounds.finalState.low = [0.5;0.5;-pi/6;-100;-100;-100];
 problem.bounds.finalState.upp = [0.7;1.2;pi/6;100;100;100]; 
 
 problem.bounds.state.low = [-5;0.5;-pi/6;-inf;-inf;-inf];

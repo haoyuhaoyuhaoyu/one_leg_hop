@@ -28,14 +28,15 @@ dpcyF  = xF(5);
 dsitaF = xF(6);
 
 % ce
-c1 = -dpcx0;
-c2 = dpcy0;
+c1 = -dpcx0 + 0.1;
+c2 = dpcy0 + 0.02;
 c = [c1; c2];
 
 % ceq
 ceq1 = pcxF - pcx0 - step_length;
 ceq2 = pcyF - pcy0 - step_height;
 ceq3 = sitaF - sita0;
-ceq  = [ceq1; ceq2; ceq3];
+c_v = [dpcx0-dpcxF; dpcy0-dpcyF;dsita0-dsitaF];
+ceq  = [ceq1; ceq2; ceq3; c_v];
 
 end
