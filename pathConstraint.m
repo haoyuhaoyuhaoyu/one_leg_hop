@@ -34,11 +34,10 @@ c_SF = zeros(phase_separate,1);
 c_SwingSPy = zeros(phase_separate,1);
 
 % for ceq constr
-ceq2 = zeros(phase_separate,1);
-ceq5 = zeros(phase_separate,1);
-ceq6 = zeros(phase_separate,1);
-ceq3 = zeros(phase_separate,1);
-ceq4 = zeros(phase_separate,1);
+ceq_SPy = zeros(phase_separate,1);
+ceq_SPx = zeros(phase_separate,1);
+ceq_SwFx = zeros(phase_separate,1);
+ceq_SwFy = zeros(phase_separate,1);
 
 % ce constr
 % all phase
@@ -72,15 +71,17 @@ c_stance = reshape(c_stance, numel(c_stance), 1);
 % swing phase
 for i = phase_separate+1:1:grid_num
     % for swing phase constr
+    % when swing, SP y must > 0
     c_SwingSPy = -pey(i); 
 end
 c_swing = c_SwingSPy;
-c_swing = reshape(c_swing, numel(c_swing), 1);
 % all c constr
 c = [c_stance; c_swing];
 
 % ceq constr
-% stance point constr, 
+% for init SPx
+ceq_SPx0 = pex(1);
+% stance point constr, x0,xF the same Leg Length
 LL_vec0 = [pcx(1), pcy(1)] - [pex(1), pey(1)];
 peF = [pex(grid_num), pey(grid_num)];
 pcF = [pcx(grid_num), pcy(grid_num)];
@@ -88,17 +89,14 @@ ceq_LL = norm(LL_vec0-(pcF-peF));
 % stance phase
 for i=1:1:phase_separate
     %for stance phase constr
-    ceq2(i) = pey(i);
-    ceq5(i) = pex(i) - pex(1);
-    ceq6(i) = pex(i);
+    ceq_SPy(i) = pey(i); % y is on the ground
+    ceq_SPx(i) = pex(i) - pex(1); % x cannot move
 end
 % swing phase
 for i=phase_separate+1:1:grid_num
     %for stance phase constr
-    ceq3(i) = fx(i);
-    ceq4(i) = fy(i);
+    ceq_SwFx(i) = fx(i);
+    ceq_SwFy(i) = fy(i);
 end
-ceq2 = reshape(ceq2, numel(ceq2), 1);
-ceq = [ceq_LL; ceq2; ceq3; ceq4; ceq5];
-
+ceq = [ceq_LL; ceq_SPy; ceq_SPx; ceq_SwFx; ceq_SwFy; ceq_SPx0];
 end
