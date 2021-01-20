@@ -33,7 +33,6 @@ c_vx0 = -dpcx0 + 0.1;
 % for the com vy
 c_vy0 = dpcy0 + 0.02;
 c = [c_vx0; c_vy0];
-
 % ceq
 %  for step length
 ceq1 = pcxF - pcx0 - step_length;
@@ -42,7 +41,7 @@ ceq2 = pcyF - pcy0 - step_height;
 %  for body sita
 ceq3 = sitaF - sita0;
 %  suppose the init and end state have the same velocity
-c_v = [dpcx0-dpcxF; dpcy0-dpcyF;dsita0-dsitaF];
-ceq  = [ceq1; ceq2; ceq3; c_v];
+ceq_v = [dpcx0+dpcxF; dpcy0+dpcyF;dsita0+dsitaF];
+ceq  = [ceq1; ceq2; ceq3; ceq_v];
 
 end

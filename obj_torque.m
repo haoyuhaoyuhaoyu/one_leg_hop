@@ -11,6 +11,7 @@ function [opt_obj] = obj_torque(x, u)
 %         pe = [pex(i), pey(i)];
 %         leg_sita(i) = atan((pc(1)-pe(1))/(pc(2)-pe(2)));
 %     end
-%     opt_obj = u(3,:).^2 + u(4,:).^2 + 5*leg_sita'.^2;
-    opt_obj = u(3,:).^2 + u(4,:).^2;
+    sita = x(3,:);
+    opt_obj = u(3,:).^2 + u(4,:).^2; % + 5*sita.^2;
+    %opt_obj = u(3,:).^2 + u(4,:).^2;
 end

@@ -8,7 +8,7 @@ function [c, ceq] = pathConstraint(x, u)
 % uEx = [4,n] = [pex;pey;fx;fy] = supporting point and forces
 
 miu = 0.8; % for friction
-L_max = 0.6;
+L_max = 0.7;
 L_min = 0.4;
 [~, grid_num] = size(x);
 phase_separate = fix(grid_num/2); % stance and swing 
@@ -43,7 +43,7 @@ ceq_SwFy = zeros(phase_separate,1);
 % all phase
 % leg length constr
 for i=1:1:grid_num
-    %for stance phase constr
+    %for all phase constr
     pc = [pcx(i), pcy(i)];
     pe = [pex(i), pey(i)];
     LL_vec = pc - pe; % peF = pcF - LL_vecF 
@@ -59,12 +59,13 @@ for i=1:1:phase_separate
     pe = [pex(i), pey(i)];
     leg_sita(i) = atan((pc(1)-pe(1))/(pc(2)-pe(2)));
     % friction cone
-    c_Cone(i) = fx(i)-fy(i)*miu*cos(leg_sita(i));
+    %c_Cone(i) = fx(i) - fy(i)*miu*tan(leg_sita(i));
+    c_Cone(i) = fx(i)^2 - (fy(i)*miu)^2;
     % support force always > 0
     c_SF(i) = -fy(i);
 end
 % Support Point ahead of COM
-c_SP = -pex(1) + pcx(1) +0.1;
+c_SP = -pex(1) + pcx(1) + 0.2;
 c_stance = [c_MaxLL; c_MinLL; c_Cone; c_SF; c_SP];
 c_stance = reshape(c_stance, numel(c_stance), 1);
 
@@ -79,8 +80,8 @@ c_swing = c_SwingSPy;
 c = [c_stance; c_swing];
 
 % ceq constr
-% for init SPx
-ceq_SPx0 = pex(1);
+% for init SPx£¬ support point is [0,0]
+ceq_SPx0 = pex(1); 
 % stance point constr, x0,xF the same Leg Length
 LL_vec0 = [pcx(1), pcy(1)] - [pex(1), pey(1)];
 peF = [pex(grid_num), pey(grid_num)];

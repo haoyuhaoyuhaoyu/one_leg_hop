@@ -11,10 +11,10 @@ p.g = 9.81;  % (m/s^2) gravity
 p.I = 0.5;   % (kg*m^2)inertia
 
 p.stepLength = 0.7;
-p.stepTime = 0.7;
-p.stepHeight = 0.25;
+p.stepTime = 0.5;
+p.stepHeight = 0.15;
 
-user_grid = 60;
+p.user_grid = 60;
 %%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %                     Set up function handles                             %
@@ -69,7 +69,7 @@ problem.options.method = 'trapezoid';
 %                            Solve!                                       %
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 
-soln = optimTraj(problem, user_grid);
+soln = optimTraj(problem, p.user_grid);
 save('soln','soln');
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -82,13 +82,14 @@ control = soln.grid.control;
 pcx = state(1,:);
 pcy = state(2,:);
 sita = state(3,:);
+dsita = state(6,:);
 pex = control(1,:);
 pey = control(2,:);
 
-phase_separate = fix(user_grid/2);
+phase_separate = fix(p.user_grid/2);
 pC = [p.stepLength/2, p.stepHeight*1.3];
 p0 = [pex(phase_separate), pey(phase_separate)];
-pF = [pex(user_grid), pey(user_grid)];
+pF = [pex(p.user_grid), pey(p.user_grid)];
 
 [x,y] = interp(p0,pF,pC,phase_separate);
 pex(phase_separate+1:end) = x;
@@ -102,7 +103,7 @@ for i=1:1:60
     draw_robot(sita(i), pcx(i),pcy(i));
     hold on
     plot(pcx(i),pcy(i),'o',...
-        'MarkerSize',10);
+        'MarkerSize',5);
     axis equal
     xlim([-2,2]);
     ylim([-0.5,2.5]);  
@@ -110,3 +111,6 @@ for i=1:1:60
     drawnow;
     pause(0.08);
 end
+%%
+[check_pathC, check_pathCeq, check_stepC, check_stepCeq, ...
+    check_Dyn] = check_Constr(soln, p);
