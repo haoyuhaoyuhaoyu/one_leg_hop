@@ -10,7 +10,7 @@ function [check_pathC, check_pathCeq, check_stepC, check_stepCeq,...
     x_k = x(:, 2:Num);
     dt = P.stepTime/P.user_grid;
     disp(xF)
-    [c1, ceq1] = pathConstraint(xF, uF);
+    [c1, ceq1] = pathConstraint(x, u);
     [c2, ceq2] = stepConstraint(x0, xF, P);
     check_pathC = c1;
     check_pathCeq = ceq1;
