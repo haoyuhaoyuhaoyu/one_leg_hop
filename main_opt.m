@@ -11,8 +11,8 @@ p.g = 9.81;  % (m/s^2) gravity
 p.I = 0.5;   % (kg*m^2)inertia
 
 p.stepLength = 0.7;
-p.stepTime = 0.5;
-p.stepHeight = 0.15;
+p.stepTime = 0.4;
+p.stepHeight = 0.25;
 
 p.user_grid = 60;
 %%
@@ -109,7 +109,7 @@ for i=1:1:60
     ylim([-0.5,2.5]);  
     hold on
     drawnow;
-    pause(0.08);
+    pause(0.03);
 end
 %%
 [check_pathC, check_pathCeq, check_stepC, check_stepCeq, ...
