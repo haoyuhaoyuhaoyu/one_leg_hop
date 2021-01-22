@@ -26,6 +26,7 @@ function [check_pathC, check_pathCeq, check_stepC, check_stepCeq,...
     check_pathCeq(91:120,:) = [repmat({'ceq_SwFy'},[30,1]),num2cell(ceq1(91:120))];
     check_pathCeq(121,:) = [repmat({'ceq_SPx0'},[1,1]),num2cell(ceq1(121))];
     check_pathCeq(122,:) = [repmat({'ceq_LL'},[1,1]),num2cell(ceq1(122))];
+    check_pathCeq(123,:) = [repmat({'ceq_Switch'},[1,1]),num2cell(ceq1(123))];
     
     % check_stepC
     check_stepC(1,:) = [repmat({'c_vx0'},[1,1]),num2cell(c2(1))];

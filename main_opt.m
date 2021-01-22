@@ -41,7 +41,7 @@ problem.bounds.state.low = [-5;0.5;-pi/6;-inf;-inf;-inf];
 problem.bounds.state.upp = [5;1.2;pi/6;inf;inf;inf];
 
 problem.bounds.control.low = [-5;0;-inf;0];
-problem.bounds.control.upp = [5;1.2;inf;p.m*p.g*10];
+problem.bounds.control.upp = [5;0.5;inf;p.m*p.g*10];
 
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -72,45 +72,12 @@ problem.options.method = 'trapezoid';
 soln = optimTraj(problem, p.user_grid);
 save('soln','soln');
 
+%%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %                        Display Solution                                 %                                     
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%%
-state = soln.grid.state;
-control = soln.grid.control;
-
-pcx = state(1,:);
-pcy = state(2,:);
-sita = state(3,:);
-dsita = state(6,:);
-pex = control(1,:);
-pey = control(2,:);
-
-phase_separate = fix(p.user_grid/2);
-pC = [p.stepLength/2, p.stepHeight*1.3];
-p0 = [pex(phase_separate), pey(phase_separate)];
-pF = [pex(p.user_grid), pey(p.user_grid)];
-
-[x,y] = interp(p0,pF,pC,phase_separate);
-pex(phase_separate+1:end) = x;
-pey(phase_separate+1:end) = y;
-for i=1:1:60
-    hold off
-    plot([pcx(i),pex(i)],[pcy(i),pey(i)],'LineWidth',2);
-    hold on
-    draw_stair(p.stepLength, p.stepHeight);
-    hold on
-    draw_robot(sita(i), pcx(i),pcy(i));
-    hold on
-    plot(pcx(i),pcy(i),'o',...
-        'MarkerSize',5);
-    axis equal
-    xlim([-2,2]);
-    ylim([-0.5,2.5]);  
-    hold on
-    drawnow;
-    pause(0.03);
-end
+step_Num = 5;
+draw_MultiStep(soln, p, step_Num);
 %%
 [check_pathC, check_pathCeq, check_stepC, check_stepCeq, ...
     check_Dyn] = check_Constr(soln, p);

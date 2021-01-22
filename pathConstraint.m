@@ -33,7 +33,7 @@ c_MinLL = zeros(grid_num,1);
 c_Cone = zeros(phase_separate,1);
 c_SF = zeros(phase_separate,1);
 c_SwingSPy = zeros(phase_separate,1);
-c_SwingSita = zeros(phase_separate,1);
+%c_SwingSita = zeros(phase_separate,1);
 
 % for ceq constr
 ceq_SPy = zeros(phase_separate,1);
@@ -77,10 +77,10 @@ for i = phase_separate+1:1:grid_num
     % when swing, SP y must > 0
     c_SwingSPy(i-phase_separate) = -pey(i); 
 %     
-    c_SwingSita(i-phase_separate) = sita(phase_separate);
+%    c_SwingSita(i-phase_separate) = sita(phase_separate);
 end
 % c_swing = [c_SwingSPy; c_SwingSita];
-c_swing = [c_SwingSPy; c_SwingSita];
+c_swing = c_SwingSPy;
 % all c constr
 c = [c_stance; c_swing];
 
@@ -104,5 +104,7 @@ for i=phase_separate+1:1:grid_num
     ceq_SwFx(i-phase_separate) = fx(i);
     ceq_SwFy(i-phase_separate) = fy(i);
 end
-ceq = [ceq_SPy; ceq_SPx; ceq_SwFx; ceq_SwFy; ceq_SPx0; ceq_LL];
+% switch phase
+ceq_Switch = [fx(phase_separate); fy(phase_separate)];
+ceq = [ceq_SPy; ceq_SPx; ceq_SwFx; ceq_SwFy; ceq_SPx0; ceq_LL; ceq_Switch];
 end
