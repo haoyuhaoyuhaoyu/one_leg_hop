@@ -10,8 +10,8 @@ p.m = 3;  % (kg) robot mass
 p.g = 9.81;  % (m/s^2) gravity
 p.I = 0.5;   % (kg*m^2)inertia
 
-p.stepLength = 0.7;
-p.stepTime = 0.4;
+p.stepLength = 1;
+p.stepTime = 0.7;
 p.stepHeight = 0.25;
 
 p.user_grid = 60;
@@ -21,7 +21,7 @@ p.user_grid = 60;
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 problem.func.dynamics = @(t,x,u)( hoppingDynamics(x,u,p) );
 problem.func.pathObj = @(t,x,u)( obj_torque(x, u) );  % minimize u
-problem.func.pathCst = @(t,x,u)( pathConstraint(x, u) );
+problem.func.pathCst = @(t,x,u)( pathConstraint(x, u, p) );
 problem.func.bndCst = @(t0,x0,tF,xF)( stepConstraint(x0,xF,p) );
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -32,13 +32,13 @@ problem.bounds.initialTime.upp = 0;
 problem.bounds.finalTime.low = p.stepTime;
 problem.bounds.finalTime.upp = p.stepTime;
 
-problem.bounds.initialState.low = [-0.2;0.5;-pi/6;-100;-100;-100];
-problem.bounds.initialState.upp = [0;0.8;pi/6;100;100;100];
-problem.bounds.finalState.low = [0.5;0.5;-pi/6;-100;-100;-100];
-problem.bounds.finalState.upp = [0.7;1.2;pi/6;100;100;100]; 
+problem.bounds.initialState.low = [-0.5;0.5;-pi/4;-100;-100;-100];
+problem.bounds.initialState.upp = [0;0.8;pi/4;100;100;100];
+problem.bounds.finalState.low = [0.5;0.5;-pi/4;-100;-100;-100];
+problem.bounds.finalState.upp = [0.7;1.2;pi/4;100;100;100]; 
 
-problem.bounds.state.low = [-5;0.5;-pi/6;-inf;-inf;-inf];
-problem.bounds.state.upp = [5;1.2;pi/6;inf;inf;inf];
+problem.bounds.state.low = [-5;0.5;-pi/4;-inf;-inf;-inf];
+problem.bounds.state.upp = [5;1.2;pi/4;inf;inf;inf];
 
 problem.bounds.control.low = [-5;0;-inf;0];
 problem.bounds.control.upp = [5;0.5;inf;p.m*p.g*10];
@@ -81,3 +81,10 @@ draw_MultiStep(soln, p, step_Num);
 %%
 [check_pathC, check_pathCeq, check_stepC, check_stepCeq, ...
     check_Dyn] = check_Constr(soln, p);
+
+%%
+% dsita = soln.grid.state(6,:);
+% plot(dsita);
+% figure()
+% sita = soln.grid.state(3,:);
+% plot(sita);

@@ -1,11 +1,9 @@
-function [c, ceq] = pathConstraint(x, u)
+function [c, ceq] = pathConstraint(x, u, p)
 % [c, ceq, cGrad, ceqGrad] = pathConstraint(x)
-%
-% This function implements a simple path constraint to keep the knee joint
-% of the robot from hyer-extending.
-%
 % x = [6,n] = [pcx;pcy;sita;dpcx;dpcy;dsita] = state of the system
 % uEx = [4,n] = [pex;pey;fx;fy] = supporting point and forces
+step_length = p.stepLength;
+step_height = p.stepHeight;
 
 miu = 0.8; % for friction
 L_max = 0.65;
@@ -66,8 +64,8 @@ for i=1:1:phase_separate
     % support force always > 0
     c_SF(i) = -fy(i);
 end
-% Support Point ahead of COM
-c_SP = -pex(1) + pcx(1) + 0.2;
+% Support Point is ahead of COM
+c_SP = -pex(1) + pcx(1);
 c_stance = [c_MaxLL; c_MinLL; c_Cone; c_SF; c_SP];
 c_stance = reshape(c_stance, numel(c_stance), 1);
 
@@ -88,10 +86,8 @@ c = [c_stance; c_swing];
 % for init SPx£¬ support point is [0,0]
 ceq_SPx0 = pex(1); 
 % stance point constr, x0,xF the same Leg Length
-LL_vec0 = [pcx(1), pcy(1)] - [pex(1), pey(1)];
-peF = [pex(grid_num), pey(grid_num)];
-pcF = [pcx(grid_num), pcy(grid_num)];
-ceq_LL = norm(LL_vec0-(pcF-peF));
+ceq_SPxF = pex(grid_num) - pex(1) - step_length;
+ceq_SPyF = pey(grid_num) - pey(1) - step_height;
 % stance phase
 for i=1:1:phase_separate
     %for stance phase constr
@@ -101,10 +97,11 @@ end
 % swing phase
 for i=phase_separate+1:1:grid_num
     %for stance phase constr
-    ceq_SwFx(i-phase_separate) = fx(i);
-    ceq_SwFy(i-phase_separate) = fy(i);
+    ceq_SwFx(i-phase_separate) = fx(i)^2;
+    ceq_SwFy(i-phase_separate) = fy(i)^2;
 end
 % switch phase
-ceq_Switch = [fx(phase_separate); fy(phase_separate)];
-ceq = [ceq_SPy; ceq_SPx; ceq_SwFx; ceq_SwFy; ceq_SPx0; ceq_LL; ceq_Switch];
+ceq_Switch = [fx(phase_separate)^2; fy(phase_separate)^2];
+ceq = [ceq_SPy; ceq_SPx; ceq_SwFx; ceq_SwFy; ceq_SPx0; ceq_SPxF; ceq_SPyF; ceq_Switch];
+
 end

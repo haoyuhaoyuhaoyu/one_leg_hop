@@ -1,5 +1,5 @@
 function [check_pathC, check_pathCeq, check_stepC, check_stepCeq,...
-    check_Dyn] = check_Constr(soln, P)    
+    check_Dyn] = check_Constr(soln, p)    
     x = soln.grid.state;
     u = soln.grid.control;
     [~, Num] = size(x);
@@ -8,9 +8,9 @@ function [check_pathC, check_pathCeq, check_stepC, check_stepCeq,...
     uF = u(:,Num);
     x_pre = x(:,1:Num-1);
     x_k = x(:, 2:Num);
-    dt = P.stepTime/P.user_grid;
-    [c1, ceq1] = pathConstraint(x, u);
-    [c2, ceq2] = stepConstraint(x0, xF, P);
+    dt = p.stepTime/p.user_grid;
+    [c1, ceq1] = pathConstraint(x, u, p);
+    [c2, ceq2] = stepConstraint(x0, xF, p);
     % check_pathC
     check_pathC(1:60,:) = [repmat({'c_MaxLL'},[60,1]),num2cell(c1(1:60))];
     check_pathC(61:120,:) = [repmat({'c_MinLL'},[60,1]),num2cell(c1(61:120))];
@@ -25,9 +25,9 @@ function [check_pathC, check_pathCeq, check_stepC, check_stepCeq,...
     check_pathCeq(61:90,:) = [repmat({'ceq_SwFx'},[30,1]),num2cell(ceq1(61:90))];
     check_pathCeq(91:120,:) = [repmat({'ceq_SwFy'},[30,1]),num2cell(ceq1(91:120))];
     check_pathCeq(121,:) = [repmat({'ceq_SPx0'},[1,1]),num2cell(ceq1(121))];
-    check_pathCeq(122,:) = [repmat({'ceq_LL'},[1,1]),num2cell(ceq1(122))];
-    check_pathCeq(123,:) = [repmat({'ceq_Switch'},[1,1]),num2cell(ceq1(123))];
-    
+    check_pathCeq(122,:) = [repmat({'ceq_SPxF'},[1,1]),num2cell(ceq1(122))];
+    check_pathCeq(123,:) = [repmat({'ceq_SPyF'},[1,1]),num2cell(ceq1(123))];
+    check_pathCeq(124,:) = [repmat({'ceq_Switch'},[1,1]),num2cell(ceq1(124))];
     % check_stepC
     check_stepC(1,:) = [repmat({'c_vx0'},[1,1]),num2cell(c2(1))];
     check_stepC(2,:) = [repmat({'c_vy0'},[1,1]),num2cell(c2(2))];
