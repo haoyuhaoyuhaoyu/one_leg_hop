@@ -24,6 +24,6 @@ m=p.m;
 g=p.g;
 I=p.I;
 
-[ddpcx,ddpcy,ddsita]=autoGen_hoppingDynamics(pcx,pcy,sita,dpcx,dpcy,dsita,pex,pey,fx,fy,m,g,I);
+[ddpcx,ddpcy,ddsita]=autoGen_hoppingDyn(pcx,pcy,sita,dpcx,dpcy,dsita,pex,pey,fx,fy,m,g,I);
 
 dz=[dpcx;dpcy;dsita;ddpcx;ddpcy;ddsita];
