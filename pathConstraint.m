@@ -64,6 +64,8 @@ for i=1:1:phase_separate
     % support force always > 0
     c_SF(i) = -fy(i);
 end
+% for phase switch, fx=fy=0, constr conflict, set c_Cone(end) = -1,
+c_Cone(end) = -1;
 % Support Point is ahead of COM
 c_SP = -pex(1) + pcx(1);
 c_stance = [c_MaxLL; c_MinLL; c_Cone; c_SF; c_SP];
@@ -97,11 +99,11 @@ end
 % swing phase
 for i=phase_separate+1:1:grid_num
     %for stance phase constr
-    ceq_SwFx(i-phase_separate) = fx(i)^2;
-    ceq_SwFy(i-phase_separate) = fy(i)^2;
+    ceq_SwFx(i-phase_separate) = fx(i);
+    ceq_SwFy(i-phase_separate) = fy(i);
 end
 % switch phase
-ceq_Switch = [fx(phase_separate)^2; fy(phase_separate)^2];
+ceq_Switch = [fx(phase_separate); fy(phase_separate)];
 ceq = [ceq_SPy; ceq_SPx; ceq_SwFx; ceq_SwFy; ceq_SPx0; ceq_SPxF; ceq_SPyF; ceq_Switch];
 
 end
