@@ -23,7 +23,7 @@ U = m*g*pcy;
 
 % compute Lagrange function and generalized force
 L = simplify(T - U);
-tau = [fx; fy; [0,0,1]*cross([pex-pcx;pey-pcy;0], [fx;fy;0])];
+tau = [fx; fy; [0,0,1]*cross([pex-pcx;pey-pcy;0], [fx;fy;0])]; % the T is according to the com, so compute the tau via center of mass
 
 % Lagrange eqn
 temp = jacobian(L, dq)';
