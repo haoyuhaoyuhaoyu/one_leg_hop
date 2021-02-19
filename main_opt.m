@@ -76,7 +76,7 @@ save('soln','soln');
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %                        Display Solution                                 %                                     
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-step_Num = 5;
+step_Num = 2;
 draw_MultiStep(soln, p, step_Num);
 %%
 [check_pathC, check_pathCeq, check_stepC, check_stepCeq, ...

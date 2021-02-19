@@ -25,7 +25,7 @@ function draw_Step(soln, p, step_Num, stair_Num)
     [x,y] = interp(p0,pF,pC,phase_separate);
     pex(phase_separate+1:end) = x;
     pey(phase_separate+1:end) = y;
-    for i=1:1:60
+    for i=1:1:p.user_grid
         hold off
         plot([pcx(i),pex(i)],[pcy(i),pey(i)],'LineWidth',2);
         hold on
